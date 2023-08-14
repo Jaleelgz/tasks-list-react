@@ -115,7 +115,7 @@ const Home = () => {
         }}
       >
         <Button
-          onClick={() => navigate("add_substation")}
+          onClick={() => navigate("new")}
           startIcon={<Add />}
           variant="contained"
         >
@@ -183,7 +183,14 @@ const Home = () => {
         </Box>
       </Box>
 
-      <Box sx={{ display: "flex", flexDirection: "column", rowGap: "15px",mt:"15px" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          rowGap: "15px",
+          mt: "15px",
+        }}
+      >
         {filteredTasks.map((taskItem) => (
           <TaskListItem key={taskItem.id} task={taskItem} />
         ))}

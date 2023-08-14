@@ -6,6 +6,7 @@ import TaskItem from "./pages/TaskItem";
 import Layout from "./common/Layout/Layout";
 import { useSelector } from "react-redux";
 import Toast from "./common/Toast/Toast";
+import AddNewTask from "./pages/AddNewTask";
 
 function App() {
   const toast = useSelector((state) => state.toast.value);
@@ -18,6 +19,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route exact index element={<Home />} />
+
+            <Route path="new" element={<AddNewTask />} />
 
             <Route path=":id" element={<TaskItem />} />
           </Route>

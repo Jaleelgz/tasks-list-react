@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { StyledSideBar } from "./StyledSideBar";
-import { Home } from "@mui/icons-material";
+import { Home, Task } from "@mui/icons-material";
 
 const SideBar = () => {
   return (
@@ -29,6 +29,26 @@ const SideBar = () => {
                     textOverflow: "ellipsis",
                   }}
                   primary="Home"
+                />
+              </ListItemButton>
+            </ListItem>
+          </NavLink>
+        </Tooltip>
+
+        <Tooltip placement="right" title="Add new task">
+          <NavLink className={"normalLink"} to={`/new`}>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <Task />
+                </ListItemIcon>
+                <ListItemText
+                  sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                  primary="New Task"
                 />
               </ListItemButton>
             </ListItem>
