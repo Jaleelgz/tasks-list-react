@@ -17,7 +17,7 @@ export async function getData(url) {
   } catch (error) {
     console.log(`getData URL=${url}`, error);
 
-    return error?.response?.data ?? undefined;
+    return error?.response ?? undefined;
   }
 }
 
@@ -44,7 +44,7 @@ export async function postData(url, data, timeout) {
   } catch (error) {
     let errorRes;
     if (error.response) {
-      errorRes = error.response.data;
+      errorRes = error.response;
     }
 
     console.log(`postData URL=${url}`, error);
@@ -71,7 +71,7 @@ export async function putData(url, data) {
   } catch (error) {
     console.log(`putData URL=${url}`, error);
 
-    return error?.response?.data ?? undefined;
+    return error?.response ?? undefined;
   }
 }
 
@@ -98,6 +98,6 @@ export async function deleteData(url) {
       return error.response;
     }
 
-    return error?.response?.data ?? undefined;
+    return error?.response ?? undefined;
   }
 }
