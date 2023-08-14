@@ -6,9 +6,15 @@ import { Box, Button, CardMedia } from "@mui/material";
 import { Image, Save } from "@mui/icons-material";
 import { COLORS } from "../constants/colors";
 import { TaskPriority } from "../enum/TaskPriority";
+import { postData } from "../utils/restUtils";
+import { showToast } from "../store/slices/ToastSlice";
+import { ToastModes } from "../enum/ToastModes";
+import { useNavigate } from "react-router-dom";
 
 const AddNewTask = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [saveDisable, setSaveDisable] = useState(true);
   const [updateData, setUpdateData] = useState({
@@ -23,14 +29,40 @@ const AddNewTask = () => {
   };
 
   const checkSaveDisable = () => {
-    for (const value of Object.values(updateData)) {
-      if (value?.toString()?.trim() === "") {
+    for (const key of Object.keys(updateData)) {
+      if (updateData[key]?.toString()?.trim() === "" && key !== "image") {
         setSaveDisable(true);
         return;
       }
     }
 
     setSaveDisable(false);
+  };
+
+  const addNewTask = async () => {
+    setLoading(true);
+
+    const addTaskRes = await postData("", {
+      ...updateData,
+      image: "",
+    });
+
+    if (!addTaskRes || addTaskRes?.status || addTaskRes?.statusCode) {
+      dispatch(
+        showToast({
+          mode: ToastModes.error,
+          text: addTaskRes?.data?.message ?? "Failed to add task.Try again!",
+        })
+      );
+      setLoading(false);
+      return;
+    }
+
+    dispatch(
+      showToast({ mode: ToastModes.success, text: "Task added successfully!." })
+    );
+    setLoading(false);
+    navigate("/");
   };
 
   useEffect(() => {
@@ -72,7 +104,12 @@ const AddNewTask = () => {
           mb: "25px",
         }}
       >
-        <Button disabled={saveDisable} startIcon={<Save />} variant="contained">
+        <Button
+          onClick={addNewTask}
+          disabled={saveDisable}
+          startIcon={<Save />}
+          variant="contained"
+        >
           Save
         </Button>
       </Box>

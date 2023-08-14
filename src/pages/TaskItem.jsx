@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import ContainerLayout from "../components/ContainerLayout/ContainerLayout";
 import { useParams } from "react-router-dom";
-import { Tasks } from "../constants/Tasks";
 import CreateUpdateTask from "../components/CreateUpdateTask/CreateUpdateTask";
 import { Box, Button, CardMedia } from "@mui/material";
 import { Delete, Image, Save } from "@mui/icons-material";
 import { COLORS } from "../constants/colors";
+import { getData } from "../utils/restUtils";
+import { showToast } from "../store/slices/ToastSlice";
+import { ToastModes } from "../enum/ToastModes";
 
 const TaskItem = () => {
   const dispatch = useDispatch();
@@ -19,22 +21,18 @@ const TaskItem = () => {
   const getTaskItem = async () => {
     setLoading(true);
 
-    // const tasksRes = await getData(`task/${id}`);
+    const tasksRes = await getData(id);
 
-    // console.log("tasksRes :",tasksRes)
-
-    // if (!tasksRes || tasksRes?.status || tasksRes?.statusCode) {
-    //   dispatch(
-    //     showToast({
-    //       mode: ToastModes.error,
-    //       text:tasksRes?.message ?? "Failed to fetch task.Try again!",
-    //     })
-    //   );
-    //   setLoading(false);
-    //   return;
-    // }
-
-    const tasksRes = Tasks.find((task) => task.id === id);
+    if (!tasksRes || tasksRes?.status || tasksRes?.statusCode) {
+      dispatch(
+        showToast({
+          mode: ToastModes.error,
+          text: tasksRes?.data?.message ?? "Failed to fetch task.Try again!",
+        })
+      );
+      setLoading(false);
+      return;
+    }
 
     setActualItem(tasksRes);
     setUpdateData(tasksRes);

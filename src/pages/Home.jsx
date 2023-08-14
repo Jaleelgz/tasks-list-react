@@ -75,22 +75,18 @@ const Home = () => {
   const getTasks = async () => {
     setLoading(true);
 
-    // const tasksRes = await getData("task/all");
+    const tasksRes = await getData("all");
 
-    // console.log("tasksRes :",tasksRes)
-
-    // if (!tasksRes || tasksRes?.status || tasksRes?.statusCode) {
-    //   dispatch(
-    //     showToast({
-    //       mode: ToastModes.error,
-    //       text: "Failed to fetch tasks.Try again!",
-    //     })
-    //   );
-    //   setLoading(false);
-    //   return;
-    // }
-
-    const tasksRes = Tasks;
+    if (!tasksRes || tasksRes?.status || tasksRes?.statusCode) {
+      dispatch(
+        showToast({
+          mode: ToastModes.error,
+          text: tasksRes?.data?.message ?? "Failed to fetch tasks.Try again!",
+        })
+      );
+      setLoading(false);
+      return;
+    }
 
     setTasks(tasksRes);
     setFilteredTasks(tasksRes);
