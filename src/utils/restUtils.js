@@ -86,8 +86,8 @@ export async function deleteData(url) {
       }
     );
 
-    if (response.status === 204) {
-      responseData = response;
+    if (response.status === 200) {
+      responseData = response?.data ?? response;
     }
 
     return responseData;

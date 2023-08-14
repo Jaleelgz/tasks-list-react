@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import ContainerLayout from "../components/ContainerLayout/ContainerLayout";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CreateUpdateTask from "../components/CreateUpdateTask/CreateUpdateTask";
 import { Box, Button, CardMedia } from "@mui/material";
 import { Delete, Image, Save } from "@mui/icons-material";
 import { COLORS } from "../constants/colors";
-import { getData } from "../utils/restUtils";
+import { deleteData, getData, putData } from "../utils/restUtils";
 import { showToast } from "../store/slices/ToastSlice";
 import { ToastModes } from "../enum/ToastModes";
 
 const TaskItem = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [saveDisable, setSaveDisable] = useState(true);
   const [actualItem, setActualItem] = useState({});
@@ -62,6 +64,60 @@ const TaskItem = () => {
     }
   };
 
+  const updateTask = async () => {
+    setLoading(true);
+
+    const updateTaskRes = await putData(id, updateData);
+
+    if (!updateTaskRes || updateTaskRes?.status || updateTaskRes?.statusCode) {
+      dispatch(
+        showToast({
+          mode: ToastModes.error,
+          text:
+            updateTaskRes?.data?.message ?? "Failed to update task.Try again!",
+        })
+      );
+      setLoading(false);
+      return;
+    }
+
+    dispatch(
+      showToast({
+        mode: ToastModes.success,
+        text: "Task updated successfully!.",
+      })
+    );
+    setLoading(false);
+    navigate("/");
+  };
+
+  const deleteTask = async () => {
+    setLoading(true);
+
+    const deleteTaskRes = await deleteData(id);
+
+    if (!deleteTaskRes || deleteTaskRes?.status || deleteTaskRes?.statusCode) {
+      dispatch(
+        showToast({
+          mode: ToastModes.error,
+          text:
+            deleteTaskRes?.data?.message ?? "Failed to delete task.Try again!",
+        })
+      );
+      setLoading(false);
+      return;
+    }
+
+    dispatch(
+      showToast({
+        mode: ToastModes.success,
+        text: "Task deleted successfully!.",
+      })
+    );
+    setLoading(false);
+    navigate("/");
+  };
+
   useEffect(() => {
     checkSaveDisable();
   }, [updateData]);
@@ -105,10 +161,16 @@ const TaskItem = () => {
           mb: "25px",
         }}
       >
-        <Button startIcon={<Delete />} variant="outlined">
+        <Button onClick={deleteTask} startIcon={<Delete />} variant="outlined">
           Delete
         </Button>
-        <Button disabled={saveDisable} startIcon={<Save />} variant="contained">
+
+        <Button
+          onClick={updateTask}
+          disabled={saveDisable}
+          startIcon={<Save />}
+          variant="contained"
+        >
           Save
         </Button>
       </Box>

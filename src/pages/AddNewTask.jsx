@@ -44,7 +44,8 @@ const AddNewTask = () => {
 
     const addTaskRes = await postData("", {
       ...updateData,
-      image: "",
+      image:
+        "https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     });
 
     if (!addTaskRes || addTaskRes?.status || addTaskRes?.statusCode) {
