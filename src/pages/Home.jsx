@@ -17,6 +17,8 @@ import { TaskPriorityFilterOptions } from "../enum/TaskPriority";
 import { getData } from "../utils/restUtils";
 import { showToast } from "../store/slices/ToastSlice";
 import { ToastModes } from "../enum/ToastModes";
+import { Tasks } from "../constants/Tasks";
+import TaskListItem from "../components/TaskListItem/TaskListItem";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -73,20 +75,22 @@ const Home = () => {
   const getTasks = async () => {
     setLoading(true);
 
-    const tasksRes = await getData("task/all");
+    // const tasksRes = await getData("task/all");
 
-    console.log("tasksRes :",tasksRes)
+    // console.log("tasksRes :",tasksRes)
 
-    if (!tasksRes || tasksRes?.status || tasksRes?.statusCode) {
-      dispatch(
-        showToast({
-          mode: ToastModes.error,
-          text: "Failed to fetch tasks.Try again!",
-        })
-      );
-      setLoading(false);
-      return;
-    }
+    // if (!tasksRes || tasksRes?.status || tasksRes?.statusCode) {
+    //   dispatch(
+    //     showToast({
+    //       mode: ToastModes.error,
+    //       text: "Failed to fetch tasks.Try again!",
+    //     })
+    //   );
+    //   setLoading(false);
+    //   return;
+    // }
+
+    const tasksRes = Tasks;
 
     setTasks(tasksRes);
     setFilteredTasks(tasksRes);
@@ -177,6 +181,12 @@ const Home = () => {
             </IconButton>
           </Paper>
         </Box>
+      </Box>
+
+      <Box sx={{ display: "flex", flexDirection: "column", rowGap: "15px",mt:"15px" }}>
+        {filteredTasks.map((taskItem) => (
+          <TaskListItem key={taskItem.id} task={taskItem} />
+        ))}
       </Box>
     </ContainerLayout>
   );
