@@ -1,9 +1,16 @@
-import React from 'react'
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { showToast } from "../store/slices/ToastSlice";
+import { ToastModes } from "../enum/ToastModes";
 
 const Home = () => {
-  return (
-    <div>Home</div>
-  )
-}
+  const dispatch = useDispatch();
 
-export default Home
+  useEffect(() => {
+    dispatch(showToast({ mode: ToastModes.info, text: "Welcome" }));
+  }, []);
+
+  return <div>Home</div>;
+};
+
+export default Home;
