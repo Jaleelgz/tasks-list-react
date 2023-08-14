@@ -1,9 +1,16 @@
-import React from 'react'
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import ContainerLayout from "../components/ContainerLayout/ContainerLayout";
 
 const TaskItem = () => {
-  return (
-    <div>TaskItem</div>
-  )
-}
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
-export default TaskItem
+  return (
+    <ContainerLayout loading={loading} title="Task">
+      <div>Task</div>
+    </ContainerLayout>
+  );
+};
+
+export default TaskItem;

@@ -1,18 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { showToast } from "../store/slices/ToastSlice";
-import { ToastModes } from "../enum/ToastModes";
 import ContainerLayout from "../components/ContainerLayout/ContainerLayout";
 
 const Home = () => {
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(showToast({ mode: ToastModes.info, text: "Welcome" }));
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   return (
-    <ContainerLayout title="Home">
+    <ContainerLayout loading={loading} title="Home">
       <div>Hello</div>
     </ContainerLayout>
   );
