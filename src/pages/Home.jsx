@@ -75,7 +75,7 @@ const Home = () => {
   const getTasks = async () => {
     setLoading(true);
 
-    const tasksRes = await getData("all");
+    const tasksRes = await getData("task/all");
 
     if (!tasksRes || tasksRes?.status || tasksRes?.statusCode) {
       dispatch(

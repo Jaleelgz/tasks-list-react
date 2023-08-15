@@ -29,9 +29,7 @@ export async function postData(url, data, timeout) {
       `${process.env.REACT_APP_BASE_URL}${url}`,
       data,
       {
-        timeout: parseInt(
-          timeout ? timeout : process.env.REACT_APP_AXIOS_API_TIMEOUT
-        ),
+        timeout: parseInt(process.env.REACT_APP_AXIOS_API_TIMEOUT),
       }
     );
 
@@ -99,5 +97,36 @@ export async function deleteData(url) {
     }
 
     return error?.response ?? undefined;
+  }
+}
+
+export async function upload(data) {
+  let responseData;
+  let response = null;
+  try {
+    response = await axios.post(
+      `${process.env.REACT_APP_BASE_URL}upload`,
+      data,
+      {
+        timeout: 400000,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    if (response.status === 201 || response.status === 200) {
+      responseData = response.data ?? "request success without data";
+    }
+    return responseData;
+  } catch (error) {
+    let errorRes;
+    if (error.response) {
+      errorRes = error.response;
+    }
+
+    console.log(`Upload error:`, error);
+
+    return errorRes;
   }
 }

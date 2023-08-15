@@ -30,7 +30,7 @@ const TaskListItem = ({ task }) => {
           }}
         >
           <img
-            src={task.image}
+            src={`${process.env.REACT_APP_BASE_URL}images/${task.image}`}
             alt={task.heading}
             style={{
               height: "100px",
@@ -67,7 +67,7 @@ const TaskListItem = ({ task }) => {
             alignItems: "center",
             justifyContent: "space-between",
             flexWrap: "wrap",
-            gap:"15px"
+            gap: "15px",
           }}
         >
           <PriorityBox priority={task.priority} />

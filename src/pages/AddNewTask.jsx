@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import ContainerLayout from "../components/ContainerLayout/ContainerLayout";
 import CreateUpdateTask from "../components/CreateUpdateTask/CreateUpdateTask";
-import { Box, Button, CardMedia } from "@mui/material";
+import { Box, Button, CardMedia, Typography } from "@mui/material";
 import { Image, Save } from "@mui/icons-material";
 import { COLORS } from "../constants/colors";
 import { TaskPriority } from "../enum/TaskPriority";
-import { postData } from "../utils/restUtils";
+import { postData, upload } from "../utils/restUtils";
 import { showToast } from "../store/slices/ToastSlice";
 import { ToastModes } from "../enum/ToastModes";
 import { useNavigate } from "react-router-dom";
+import { FONTS } from "../constants/fonts";
+import { uploadImageToServer } from "../utils/imageUtils";
 
 const AddNewTask = () => {
   const dispatch = useDispatch();
@@ -28,9 +30,21 @@ const AddNewTask = () => {
     setUpdateData({ ...updateData, [mode]: event.target.value });
   };
 
+  const handleUploadClick = (event) => {
+    const files = event.target.files;
+
+    if (!files || files?.length === 0) {
+      return;
+    }
+
+    let image = URL.createObjectURL(event.target.files[0]);
+
+    setUpdateData({ ...updateData, image });
+  };
+
   const checkSaveDisable = () => {
     for (const key of Object.keys(updateData)) {
-      if (updateData[key]?.toString()?.trim() === "" && key !== "image") {
+      if (updateData[key]?.toString()?.trim() === "") {
         setSaveDisable(true);
         return;
       }
@@ -39,13 +53,47 @@ const AddNewTask = () => {
     setSaveDisable(false);
   };
 
-  const addNewTask = async () => {
+  const uploadImage = async () => {
     setLoading(true);
 
-    const addTaskRes = await postData("", {
+    const uploadRes = await uploadImageToServer(updateData.image);
+
+    if (!uploadRes || uploadRes?.status || uploadRes?.statusCode) {
+      dispatch(
+        showToast({
+          mode: ToastModes.error,
+          text: uploadRes?.data?.message ?? "Failed to upload image.Try again!",
+        })
+      );
+      setLoading(false);
+      return;
+    }
+
+    return uploadRes;
+  };
+
+  const addNewTask = async () => {
+    if (!updateData.image || updateData.image?.trim() === "") {
+      dispatch(
+        showToast({
+          mode: ToastModes.error,
+          text: "Image required!",
+        })
+      );
+      return;
+    }
+
+    const imgUrl = await uploadImage();
+
+    if (!imgUrl) {
+      return;
+    }
+
+    setLoading(true);
+
+    const addTaskRes = await postData("task", {
       ...updateData,
-      image:
-        "https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      image: imgUrl,
     });
 
     if (!addTaskRes || addTaskRes?.status || addTaskRes?.statusCode) {
@@ -83,16 +131,35 @@ const AddNewTask = () => {
             />
           </Box>
         ) : (
-          <Button
-            sx={{
-              ...Styles.emptyImageContainer,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Image sx={{ height: 50, width: 50, color: COLORS.DISABLED_F2 }} />
-          </Button>
+          <>
+            <input
+              style={{ display: "none" }}
+              accept="image/*"
+              id="contained-button-file"
+              type="file"
+              onChange={handleUploadClick}
+            />
+            <label htmlFor="contained-button-file">
+              <Box
+                sx={{
+                  ...Styles.emptyImageContainer,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textTransform: "none",
+                  flexDirection: "column",
+                  cursor: "pointer",
+                }}
+              >
+                <Image
+                  sx={{ height: 50, width: 50, color: COLORS.DISABLED_F2 }}
+                />
+                <Typography sx={{ fontFamily: FONTS.InterMedium }}>
+                  Add image
+                </Typography>
+              </Box>
+            </label>
+          </>
         )}
       </Box>
 

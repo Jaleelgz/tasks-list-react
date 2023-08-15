@@ -23,7 +23,7 @@ const TaskItem = () => {
   const getTaskItem = async () => {
     setLoading(true);
 
-    const tasksRes = await getData(id);
+    const tasksRes = await getData(`task/${id}`);
 
     if (!tasksRes || tasksRes?.status || tasksRes?.statusCode) {
       dispatch(
@@ -67,7 +67,7 @@ const TaskItem = () => {
   const updateTask = async () => {
     setLoading(true);
 
-    const updateTaskRes = await putData(id, updateData);
+    const updateTaskRes = await putData(`task/${id}`, updateData);
 
     if (!updateTaskRes || updateTaskRes?.status || updateTaskRes?.statusCode) {
       dispatch(
@@ -94,7 +94,7 @@ const TaskItem = () => {
   const deleteTask = async () => {
     setLoading(true);
 
-    const deleteTaskRes = await deleteData(id);
+    const deleteTaskRes = await deleteData(`task/${id}`);
 
     if (!deleteTaskRes || deleteTaskRes?.status || deleteTaskRes?.statusCode) {
       dispatch(
@@ -134,7 +134,7 @@ const TaskItem = () => {
             <CardMedia
               sx={Styles.feedsImg}
               component="img"
-              image={updateData.image}
+              image={`${process.env.REACT_APP_BASE_URL}images/${updateData.image}`}
               alt=""
             />
           </Box>
